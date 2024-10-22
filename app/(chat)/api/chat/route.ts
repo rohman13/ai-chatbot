@@ -4,6 +4,7 @@ import { z } from "zod";
 import { customModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
 import { deleteChatById, getChatById, saveChat } from "@/db/queries";
+import { cleanGraphRagOutput } from "@/lib/utils";
 
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: customModel,
     system:
-      "you are a friendly assistant! keep your responses concise and helpful.",
+      "you are a friendly assistant! keep your responses concise and helpful. if you need to call function, make sure to provide complete comprehensive parameters.",
     messages: coreMessages,
     maxSteps: 5,
     tools: {
@@ -36,9 +37,25 @@ export async function POST(request: Request) {
           );
 
           const weatherData = await response.json();
+          console.log("weatherData", weatherData);
           return weatherData;
         },
       },
+      graphRag: {
+        description: "Get everything information about Naruto series. The query should be exact and concise and detailed.",
+        parameters: z.object({
+          query: z.string(),
+          method: z.enum(["local", "global"]),
+        }),
+        execute: async ({ query }) => {
+          const response = await fetch(
+            `http://localhost:5000/query?query=${encodeURIComponent(query)}&method=local&response_type=json`,
+          );
+          const data = await response.json();
+          const cleanedData = cleanGraphRagOutput(data.output);
+          return cleanedData;
+        },
+      }
     },
     onFinish: async ({ responseMessages }) => {
       if (session.user && session.user.id) {

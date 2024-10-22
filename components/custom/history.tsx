@@ -18,6 +18,8 @@ import {
   MoreHorizontalIcon,
   PencilEditIcon,
   TrashIcon,
+  AttachmentIcon,
+  UserIcon,
 } from "./icons";
 import {
   AlertDialog,
@@ -115,15 +117,44 @@ export const History = ({ user }: { user: User | undefined }) => {
 
           <div className="text-sm flex flex-row items-center justify-between">
             <div className="flex flex-row gap-2">
-              <div className="dark:text-zinc-300">History</div>
+              <div className="dark:text-zinc-300">Menu</div>
 
               <div className="dark:text-zinc-400 text-zinc-500">
                 {history === undefined ? "loading" : history.length} chats
               </div>
             </div>
           </div>
-
           <div className="mt-10 flex flex-col">
+            {user && (
+              <Button
+                className="font-normal text-sm flex flex-row justify-between"
+                asChild
+                variant="outline"
+              >
+                <Link href="/documents">
+                  <div>GraphRAG Documents</div>
+                  <AttachmentIcon size={14} />
+                </Link>
+              </Button>
+            )}
+          </div>
+
+          <div className="mt-1 flex flex-col">
+            {user && (
+              <Button
+                className="font-normal text-sm flex flex-row justify-between"
+                asChild
+                variant="outline"
+              >
+                <Link href="/agents">
+                  <div>Agents</div>
+                  <UserIcon size={14} />
+                </Link>
+              </Button>
+            )}
+          </div>
+
+          <div className="mt-2 flex flex-col">
             {user && (
               <Button
                 className="font-normal text-sm flex flex-row justify-between"

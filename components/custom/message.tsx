@@ -50,12 +50,21 @@ export const Message = ({
                     {toolName === "getWeather" ? (
                       <Weather weatherAtLocation={result} />
                     ) : null}
+                    {toolName === "graphRag" ? (
+                      <Markdown>{"GraphRAG Results:\n\n" + result}</Markdown>
+                    ) : null}
                   </div>
                 );
               } else {
                 return (
                   <div key={toolCallId} className="skeleton">
-                    {toolName === "getWeather" ? <Weather /> : null}
+                    {toolName === "getWeather" && <Weather />}
+                    {toolName === "graphRag" && (
+                      <div>
+                        <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                        </svg>
+                      </div>)
+                    }
                   </div>
                 );
               }

@@ -41,3 +41,8 @@ export function generateUUID(): string {
     return v.toString(16);
   });
 }
+
+export function cleanGraphRagOutput(output: string): string {
+  const cleanedOutput = output.replace(/INFO.*\}/s, '');
+  return cleanedOutput.trim();
+}
